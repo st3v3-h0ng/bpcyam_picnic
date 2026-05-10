@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>부천평안교회 청년부 야외예배 사진첩</title>
+  <title>부천평안교회 청년부 야외나들이 사진첩</title>
   <style>
     :root {
       --green:#5f9f63; --green-dark:#2f6841; --mint:#eaf7dc; --cream:#fffaf0;
@@ -49,22 +49,35 @@
     .modal-top,.modal-bottom{padding:13px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line)}
     .modal-bottom{border-top:1px solid var(--line);border-bottom:0;flex-wrap:wrap}
     .modal-title{min-width:0;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .viewer{position:relative;background:#162114;display:flex;align-items:center;justify-content:center;min-height:320px;overflow:auto}
-    .viewer img{max-width:100%;max-height:72vh;display:block}
-    .nav-btn{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:48px;height:48px;border-radius:999px;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.55);color:var(--green-dark);box-shadow:0 10px 28px rgba(0,0,0,.24);font-size:24px;line-height:1;padding:0}
-    .nav-btn.prev{left:14px}
-    .nav-btn.next{right:14px}
+    .viewer-row{background:#162114;display:grid;grid-template-columns:64px minmax(0,1fr) 64px;align-items:center;min-height:320px}
+    .viewer{display:flex;align-items:center;justify-content:center;min-height:320px;max-height:72vh;overflow:auto;touch-action:pan-y;user-select:none}
+    .viewer img{max-width:100%;max-height:72vh;display:block;user-select:none;-webkit-user-drag:none;touch-action:pan-y}
+    .nav-btn{position:static;width:46px;height:46px;margin:0 auto;border-radius:999px;background:rgba(255,255,255,.96);border:1px solid rgba(255,255,255,.65);color:var(--green-dark);box-shadow:0 10px 28px rgba(0,0,0,.24);font-size:24px;line-height:1;padding:0;display:flex;align-items:center;justify-content:center}
+    .nav-btn:hover{transform:none;background:#fff}
+    .swipe-hint{display:none;color:rgba(255,255,255,.7);font-size:12px;text-align:center;padding:7px 0 0}
     .privacy{margin-top:30px;padding:17px 19px;border-radius:22px;background:#fff8df;border:1px solid #f3df9f;color:#6b5b31;line-height:1.65;font-size:14px;word-break:keep-all}
-    @media(max-width:820px){.toolbar{position:static}.search{min-width:100%}.stats{width:100%;margin-left:0}.gallery{grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px}.hero{padding-top:48px}.nav-btn{width:42px;height:42px;font-size:21px}.nav-btn.prev{left:8px}.nav-btn.next{right:8px}}
+    @media(max-width:820px){
+      .toolbar{position:static}.search{min-width:100%}.stats{width:100%;margin-left:0}.gallery{grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px}.hero{padding-top:48px}
+      .modal{padding:10px;align-items:center}
+      .modal-box{width:100%;max-height:96vh;border-radius:22px;grid-template-rows:auto auto auto auto}
+      .modal-top,.modal-bottom{padding:11px 12px}.modal-bottom .btn{width:100%;text-align:center}
+      .viewer-row{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"image image" "prev next";gap:10px;align-items:center;min-height:0;padding:12px;background:#162114}
+      .viewer{grid-area:image;width:100%;min-height:0;max-height:58vh;overflow:hidden;border-radius:14px;background:#10180f}
+      .viewer img{max-width:100%;max-height:58vh;object-fit:contain}
+      #prevPhoto{grid-area:prev;justify-self:end}
+      #nextPhoto{grid-area:next;justify-self:start}
+      .nav-btn{width:46px;height:42px;font-size:22px;margin:0;background:#fff;box-shadow:none}
+      .swipe-hint{display:block;background:#162114;margin-top:-1px;padding:0 0 10px}
+    }
   </style>
 </head>
 <body>
   <section class="hero">
     <div class="badge">🌿 부천평안교회 청년부</div>
-    <h1>2026년 4월 26일<br />야외예배 사진첩</h1>
-    <p class="subtitle">일회용 필름카메라에 담긴 청년부 야외예배의 순간들을 한곳에 모았습니다.<br />사진을 누르면 크게 볼 수 있고, 원본 전체 파일은 구글드라이브에서 받을 수 있습니다.</p>
+    <h1>야외나들이<br />피크닉 사진첩</h1>
+    <p class="subtitle">일회용 필름카메라에 담긴 청년부의 야외나들이 순간들을 한곳에 모았습니다. 사진을 누르면 크게 볼 수 있고, 원본 전체 파일은 구글드라이브에서 받을 수 있습니다.</p>
     <div class="hero-actions">
-      <a class="btn primary" href="https://drive.google.com/drive/folders/1VQqchFVZ9QfEtkcYfolYHWuGaEYpEsC1?usp=sharing" target="_blank" rel="noopener">원본 사진 드라이브 링크</a>
+      <a class="btn primary" href="https://drive.google.com/drive/folders/1VQqchFVZ9QfEtkcYfolYHWuGaEYpEsC1?usp=sharing" target="_blank" rel="noopener">원본 사진 전체 다운로드</a>
       <a class="btn soft" href="#gallery">사진첩 보기</a>
     </div>
   </section>
@@ -81,11 +94,14 @@
   <div id="modal" class="modal">
     <div class="modal-box">
       <div class="modal-top"><div id="modalTitle" class="modal-title">사진 보기</div><button id="closeModal">닫기</button></div>
-      <div class="viewer">
+      <div id="viewerRow" class="viewer-row">
         <button id="prevPhoto" class="nav-btn prev" aria-label="이전 사진">‹</button>
-        <img id="modalImg" alt="확대 사진">
+        <div class="viewer">
+          <img id="modalImg" alt="확대 사진" draggable="false">
+        </div>
         <button id="nextPhoto" class="nav-btn next" aria-label="다음 사진">›</button>
       </div>
+      <div class="swipe-hint">모바일에서는 사진을 좌우로 스와이프해서 넘길 수 있습니다.</div>
       <div class="modal-bottom"><span id="modalCount" class="stats"></span><a class="btn primary" href="https://drive.google.com/drive/folders/1VQqchFVZ9QfEtkcYfolYHWuGaEYpEsC1?usp=sharing" target="_blank" rel="noopener">원본 전체 다운로드</a></div>
     </div>
   </div>
@@ -230,6 +246,43 @@ document.addEventListener('keydown', e => {
   if(e.key==='Escape') closeModal();
   if(e.key==='ArrowLeft') movePhoto(-1);
   if(e.key==='ArrowRight') movePhoto(1);
+});
+let swipeStartX = 0;
+let swipeStartY = 0;
+let swipeActive = false;
+const viewerRow = $('viewerRow');
+function beginSwipe(x, y) {
+  swipeStartX = x;
+  swipeStartY = y;
+  swipeActive = true;
+}
+function finishSwipe(x, y) {
+  if (!swipeActive) return;
+  swipeActive = false;
+  const dx = x - swipeStartX;
+  const dy = y - swipeStartY;
+  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.25) {
+    if (dx < 0) movePhoto(1);
+    else movePhoto(-1);
+  }
+}
+[viewerRow, modalImg].forEach(el => {
+  el.addEventListener('touchstart', (e) => {
+    if (!e.changedTouches || !e.changedTouches.length) return;
+    beginSwipe(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+  }, { passive: true });
+  el.addEventListener('touchend', (e) => {
+    if (!e.changedTouches || !e.changedTouches.length) return;
+    finishSwipe(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+  }, { passive: true });
+});
+viewerRow.addEventListener('pointerdown', (e) => {
+  if (e.pointerType === 'mouse') return;
+  beginSwipe(e.clientX, e.clientY);
+});
+viewerRow.addEventListener('pointerup', (e) => {
+  if (e.pointerType === 'mouse') return;
+  finishSwipe(e.clientX, e.clientY);
 });
 search.addEventListener('input', render);
 init();
